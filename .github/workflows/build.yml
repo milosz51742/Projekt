@@ -1,0 +1,44 @@
+name: Build and Upload Executable
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  
+  push:
+    branches:
+      - Task0
+      - Task1
+      - Task2
+      - Task3
+      - Task4
+      - Task5
+      - Task6
+      - Task7  
+  workflow_dispatch:  
+
+jobs:
+  build:
+    runs-on: windows-latest  
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8' 
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          .\installResources.ps1
+
+      - name: Build executable
+        run: |
+          pyinstaller --onefile main.py  # Komenda do budowania pliku .exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-executable
+          path: dist/main.exe  
