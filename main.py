@@ -1,15 +1,29 @@
+import argparse
 import xml.etree.ElementTree as ET
 
-def load_xml(file_path):
-    tree = ET.parse(file_path)
-    root = tree.getroot()
-    return root
+def main():
+    parser = argparse.ArgumentParser(description="Example program")
+    parser.add_argument('--input', required=True, help='Input file')
+    parser.add_argument('--output', required=True, help='Output file')
+    parser.add_argument('--format', required=True, choices=['json', 'yaml', 'xml'], help='Format of the file')
 
-def convert_to_dict(element):
-    return {element.tag: {child.tag: child.text for child in element}}
+    args = parser.parse_args()
+
+    print(f"Input file: {args.input}")
+    print(f"Output file: {args.output}")
+    print(f"Format: {args.format}")
+
+    # Wczytywanie pliku
+    try:
+        with open(args.input, 'r') as infile:
+            if args.format == 'xml':
+                data = ET.parse(infile).getroot()
+                print("XML data loaded successfully")
+            else:
+                print("Unsupported format for this task")
+                return
+    except Exception as e:
+        print(f"Error reading the input file: {e}")
 
 if __name__ == "__main__":
-    args = parse_arguments()
-    if args.format == 'xml':
-        data = load_xml(args.input)
-        data = convert_to_dict(data)
+    main()
