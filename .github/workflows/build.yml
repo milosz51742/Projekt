@@ -5,7 +5,6 @@ on:
     - cron: '0 0 * * 0'  # Uruchomienie automatyczne raz w tygodniu (niedziela o północy)
   push:
     branches:
-      - Task0
       - Task1
       - Task2
       - Task3
@@ -26,20 +25,40 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8' 
+          python-version: '3.8'  # Wybierz wersję Pythona
 
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pyinstaller  # Dodaj instalację pyinstaller
+          pip install pyinstaller  
           .\installResources.ps1
+
+      - name: List files in working directory
+        run: dir
 
       - name: Build executable
         run: |
-          pyinstaller --onefile main.py  # Komenda do budowania pliku .exe
+          if (Test-Path -Path ./Task1/main.py) {
+            pyinstaller --onefile Task1/main.py
+          } elseif (Test-Path -Path ./Task2/main.py) {
+            pyinstaller --onefile Task2/main.py
+          } elseif (Test-Path -Path ./Task3/main.py) {
+            pyinstaller --onefile Task3/main.py
+          } elseif (Test-Path -Path ./Task4/main.py) {
+            pyinstaller --onefile Task4/main.py
+          } elseif (Test-Path -Path ./Task5/main.py) {
+            pyinstaller --onefile Task5/main.py
+          } elseif (Test-Path -Path ./Task6/main.py) {
+            pyinstaller --onefile Task6/main.py
+          } elseif (Test-Path -Path ./Task7/main.py) {
+            pyinstaller --onefile Task7/main.py
+          } else {
+            Write-Error "main.py not found in expected paths"
+          }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: my-executable
-          path: dist/main.exe  # Ścieżka do pliku .exe
+          path: dist/*.exe  # Ścieżka do pliku .exe
+
