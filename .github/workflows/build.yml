@@ -30,28 +30,26 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pyinstaller  
+          pip install pyinstaller  # Dodaj instalację pyinstaller
           .\installResources.ps1
 
       - name: List files in working directory
         run: dir
 
-      - name: Build executable
+      - name: Find and build main.py
         run: |
-          if (Test-Path -Path ./Task1/main.py) {
-            pyinstaller --onefile Task1/main.py
-          } elseif (Test-Path -Path ./Task2/main.py) {
-            pyinstaller --onefile Task2/main.py
-          } elseif (Test-Path -Path ./Task3/main.py) {
-            pyinstaller --onefile Task3/main.py
-          } elseif (Test-Path -Path ./Task4/main.py) {
-            pyinstaller --onefile Task4/main.py
-          } elseif (Test-Path -Path ./Task5/main.py) {
-            pyinstaller --onefile Task5/main.py
-          } elseif (Test-Path -Path ./Task6/main.py) {
-            pyinstaller --onefile Task6/main.py
-          } elseif (Test-Path -Path ./Task7/main.py) {
-            pyinstaller --onefile Task7/main.py
+          $paths = @(
+            "./Task1/main.py",
+            "./Task2/main.py",
+            "./Task3/main.py",
+            "./Task4/main.py",
+            "./Task5/main.py",
+            "./Task6/main.py",
+            "./Task7/main.py"
+          )
+          $mainPath = $paths | Where-Object { Test-Path $_ }
+          if ($mainPath) {
+            pyinstaller --onefile $mainPath
           } else {
             Write-Error "main.py not found in expected paths"
           }
