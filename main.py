@@ -1,18 +1,42 @@
-def save_xml(data, file_path):
-    tree = ET.ElementTree(data)
-    tree.write(file_path)
+import argparse
+import xml.etree.ElementTree as ET
 
-def convert_to_element(data, root_tag):
-    root = ET.Element(root_tag)
-    for key, value in data.items():
-        child = ET.SubElement(root, key)
-        child.text = str(value)
-    return root
+def main():
+    parser = argparse.ArgumentParser(description="Example program")
+    parser.add_argument('--input', required=True, help='Input file')
+    parser.add_argument('--output', required=True, help='Output file')
+    parser.add_argument('--format', required=True, choices=['json', 'yaml', 'xml'], help='Format of the file')
+
+    args = parser.parse_args()
+
+    print(f"Input file: {args.input}")
+    print(f"Output file: {args.output}")
+    print(f"Format: {args.format}")
+
+    # Wczytywanie pliku
+    try:
+        with open(args.input, 'r') as infile:
+            if args.format == 'xml':
+                data = ET.parse(infile).getroot()
+                print("XML data loaded successfully")
+            else:
+                print("Unsupported format for this task")
+                return
+    except Exception as e:
+        print(f"Error reading the input file: {e}")
+        return
+
+    # Zapis do pliku
+    try:
+        with open(args.output, 'w') as outfile:
+            if args.format == 'xml':
+                tree = ET.ElementTree(data)
+                tree.write(outfile)
+                print("XML data saved successfully")
+            else:
+                print("Unsupported format for this task")
+    except Exception as e:
+        print(f"Error writing the output file: {e}")
 
 if __name__ == "__main__":
-    args = parse_arguments()
-    if args.format == 'xml':
-        data = load_xml(args.input)
-        data = convert_to_dict(data)
-        data_element = convert_to_element(data, 'root') 
-        save_xml(data_element, args.output)
+    main()
