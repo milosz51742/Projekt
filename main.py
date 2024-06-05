@@ -1,22 +1,29 @@
+import argparse
 import json
-import jsonschema
-from jsonschema import validate
 
-def load_json(file_path):
-    with open(file_path, 'r') as file:
-        data = json.load(file)
-    return data
+def main():
+    parser = argparse.ArgumentParser(description="Example program")
+    parser.add_argument('--input', required=True, help='Input file')
+    parser.add_argument('--output', required=True, help='Output file')
+    parser.add_argument('--format', required=True, choices=['json', 'yaml', 'xml'], help='Format of the file')
 
-def validate_json(data, schema):
+    args = parser.parse_args()
+
+    print(f"Input file: {args.input}")
+    print(f"Output file: {args.output}")
+    print(f"Format: {args.format}")
+
+    # Wczytywanie pliku
     try:
-        validate(instance=data, schema=schema)
-    except jsonschema.exceptions.ValidationError as err:
-        print(f'JSON validation error: {err}')
-        return False
-    return True
+        with open(args.input, 'r') as infile:
+            if args.format == 'json':
+                data = json.load(infile)
+                print("JSON data loaded successfully")
+            else:
+                print("Unsupported format for this task")
+                return
+    except Exception as e:
+        print(f"Error reading the input file: {e}")
 
 if __name__ == "__main__":
-    args = parse_arguments()
-    if args.format == 'json':
-        data = load_json(args.input)
-        # Dodaj walidację schematu JSON, jeśli jest dostępna
+    main()
