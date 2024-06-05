@@ -36,6 +36,23 @@ jobs:
       - name: List files in working directory
         run: dir
 
+      - name: List files in Task directories
+        run: |
+          echo "Files in Task1:"
+          Get-ChildItem -Path ./Task1
+          echo "Files in Task2:"
+          Get-ChildItem -Path ./Task2
+          echo "Files in Task3:"
+          Get-ChildItem -Path ./Task3
+          echo "Files in Task4:"
+          Get-ChildItem -Path ./Task4
+          echo "Files in Task5:"
+          Get-ChildItem -Path ./Task5
+          echo "Files in Task6:"
+          Get-ChildItem -Path ./Task6
+          echo "Files in Task7:"
+          Get-ChildItem -Path ./Task7
+
       - name: Find and build main.py
         run: |
           $paths = @(
@@ -59,4 +76,3 @@ jobs:
         with:
           name: my-executable
           path: dist/*.exe  # Ścieżka do pliku .exe
-
