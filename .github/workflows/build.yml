@@ -2,7 +2,7 @@ name: Build and Upload Executable
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  
+    - cron: '0 0 * * 0'  # Uruchomienie automatyczne raz w tygodniu (niedziela o północy)
   push:
     branches:
       - Task0
@@ -12,12 +12,12 @@ on:
       - Task4
       - Task5
       - Task6
-      - Task7  
-  workflow_dispatch:  
+      - Task7  # Uruchomienie po push na odpowiednie gałęzie
+  workflow_dispatch:  # Ręczne uruchomienie przez użytkownika
 
 jobs:
   build:
-    runs-on: windows-latest  
+    runs-on: windows-latest  # Domyślny serwer Windows
 
     steps:
       - name: Checkout repository
@@ -31,6 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install pyinstaller  # Dodaj instalację pyinstaller
           .\installResources.ps1
 
       - name: Build executable
@@ -41,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: my-executable
-          path: dist/main.exe  
+          path: dist/main.exe  # Ścieżka do pliku .exe
