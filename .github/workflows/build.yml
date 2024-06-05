@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Pobierz wszystkie gałęzie
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -33,42 +35,23 @@ jobs:
           pip install pyinstaller  # Dodaj instalację pyinstaller
           .\installResources.ps1
 
-      - name: List files in working directory
-        run: dir
-
-      - name: List files in Task directories
+      - name: Build main.py if it exists
         run: |
-          echo "Files in Task1:"
-          Get-ChildItem -Path ./Task1
-          echo "Files in Task2:"
-          Get-ChildItem -Path ./Task2
-          echo "Files in Task3:"
-          Get-ChildItem -Path ./Task3
-          echo "Files in Task4:"
-          Get-ChildItem -Path ./Task4
-          echo "Files in Task5:"
-          Get-ChildItem -Path ./Task5
-          echo "Files in Task6:"
-          Get-ChildItem -Path ./Task6
-          echo "Files in Task7:"
-          Get-ChildItem -Path ./Task7
+          $branches = @("Task1", "Task2", "Task3", "Task4", "Task5", "Task6", "Task7")
+          $branchWithMain = $null
 
-      - name: Find and build main.py
-        run: |
-          $paths = @(
-            "./Task1/main.py",
-            "./Task2/main.py",
-            "./Task3/main.py",
-            "./Task4/main.py",
-            "./Task5/main.py",
-            "./Task6/main.py",
-            "./Task7/main.py"
-          )
-          $mainPath = $paths | Where-Object { Test-Path $_ }
-          if ($mainPath) {
-            pyinstaller --onefile $mainPath
+          foreach ($branch in $branches) {
+            git checkout $branch
+            if (Test-Path -Path ./main.py) {
+              $branchWithMain = $branch
+              break
+            }
+          }
+
+          if ($branchWithMain) {
+            pyinstaller --onefile main.py
           } else {
-            Write-Error "main.py not found in expected paths"
+            Write-Error "main.py not found in any branch"
           }
 
       - name: Upload artifact
