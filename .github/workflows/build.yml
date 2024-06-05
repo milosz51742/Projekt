@@ -2,7 +2,7 @@ name: Build and Upload Executable
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # Uruchomienie automatyczne raz w tygodniu (niedziela o północy)
+    - cron: '0 0 * * 0' 
   push:
     branches:
       - Task1
@@ -11,28 +11,27 @@ on:
       - Task4
       - Task5
       - Task6
-      - Task7  # Uruchomienie po push na odpowiednie gałęzie
-  workflow_dispatch:  # Ręczne uruchomienie przez użytkownika
-
+      - Task7  
+  workflow_dispatch:  
 jobs:
   build:
-    runs-on: windows-latest  # Domyślny serwer Windows
+    runs-on: windows-latest  
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Pobierz wszystkie gałęzie
+          fetch-depth: 0  
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8'  # Wybierz wersję Pythona
+          python-version: '3.8' 
 
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pyinstaller  # Dodaj instalację pyinstaller
+          pip install pyinstaller 
           .\installResources.ps1
 
       - name: Build main.py if it exists
@@ -58,4 +57,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: my-executable
-          path: dist/*.exe  # Ścieżka do pliku .exe
+          path: dist/*.exe  
